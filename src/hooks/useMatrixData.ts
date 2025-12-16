@@ -4,12 +4,9 @@ import { useEffect, useState } from "react";
 import Papa from "papaparse";
 import type { MatrixData, Project, Capability } from "../types/matrix";
 
-// Adjust this to match your real CSV location
-// Use import.meta.env.BASE_URL to work with GitHub Pages subdirectory
-// BASE_URL is '/rare-labs-solutions-matrix/' when deployed (Vite ensures trailing slash)
-const BASE_URL = import.meta.env.BASE_URL || '/';
+// CSV file path relative to the HTML file (both are in the dist root)
 const CSV_FILENAME = 'bertin_matrix_projects_vs_capabilities_clustered_for_webpage.csv';
-const CSV_URL = BASE_URL + CSV_FILENAME;
+const CSV_URL = CSV_FILENAME; // Relative path - same directory as index.html
 
 // Adjust these to match the actual project-level columns in your CSV.
 // Every other column will be treated as an AI capability.
@@ -40,14 +37,11 @@ export function useMatrixData(): UseMatrixDataResult {
     setIsLoading(true);
     setError(null);
 
-    // Ensure CSV URL is properly formatted (no double slashes)
-    const normalizedCSVUrl = CSV_URL.replace(/([^:]\/)\/+/g, '$1');
-    
-    console.log('Loading CSV from:', normalizedCSVUrl);
-    console.log('BASE_URL:', import.meta.env.BASE_URL);
+    console.log('Loading CSV from:', CSV_URL);
     console.log('Current location:', window.location.href);
+    console.log('CSV will be resolved relative to:', window.location.pathname);
 
-    Papa.parse<RawRow>(normalizedCSVUrl, {
+    Papa.parse<RawRow>(CSV_URL, {
       download: true,
       header: true,
       dynamicTyping: true,
@@ -160,12 +154,11 @@ export function useMatrixData(): UseMatrixDataResult {
         }
       },
       error: (err) => {
-        const errorUrl = CSV_URL.replace(/([^:]\/)\/+/g, '$1');
         console.error('CSV loading error:', err);
-        console.error('Attempted to load from:', errorUrl);
-        console.error('Full URL would be:', window.location.origin + errorUrl);
+        console.error('Attempted to load from:', CSV_URL);
+        console.error('Resolved URL would be:', new URL(CSV_URL, window.location.href).href);
         const errorMsg = err?.message || 'Unknown error';
-        setError(`Failed to load CSV from ${errorUrl}: ${errorMsg}`);
+        setError(`Failed to load CSV from ${CSV_URL}: ${errorMsg}`);
         setIsLoading(false);
       },
     });
