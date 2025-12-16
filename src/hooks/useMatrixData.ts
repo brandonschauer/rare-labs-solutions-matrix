@@ -40,10 +40,14 @@ export function useMatrixData(): UseMatrixDataResult {
     setIsLoading(true);
     setError(null);
 
-    console.log('Loading CSV from:', CSV_URL);
+    // Ensure CSV URL is properly formatted (no double slashes)
+    const normalizedCSVUrl = CSV_URL.replace(/([^:]\/)\/+/g, '$1');
+    
+    console.log('Loading CSV from:', normalizedCSVUrl);
     console.log('BASE_URL:', import.meta.env.BASE_URL);
+    console.log('Current location:', window.location.href);
 
-    Papa.parse<RawRow>(CSV_URL, {
+    Papa.parse<RawRow>(normalizedCSVUrl, {
       download: true,
       header: true,
       dynamicTyping: true,
@@ -156,9 +160,12 @@ export function useMatrixData(): UseMatrixDataResult {
         }
       },
       error: (err) => {
+        const errorUrl = CSV_URL.replace(/([^:]\/)\/+/g, '$1');
         console.error('CSV loading error:', err);
-        console.error('Attempted to load from:', CSV_URL);
-        setError(`Failed to load CSV from ${CSV_URL}: ${err.message ?? 'Unknown error'}`);
+        console.error('Attempted to load from:', errorUrl);
+        console.error('Full URL would be:', window.location.origin + errorUrl);
+        const errorMsg = err?.message || 'Unknown error';
+        setError(`Failed to load CSV from ${errorUrl}: ${errorMsg}`);
         setIsLoading(false);
       },
     });
