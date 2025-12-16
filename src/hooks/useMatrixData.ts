@@ -6,8 +6,8 @@ import type { MatrixData, Project, Capability } from "../types/matrix";
 
 // Adjust this to match your real CSV location
 // Use import.meta.env.BASE_URL to work with GitHub Pages subdirectory
-// BASE_URL is '/rare-labs-solutions-matrix/' when deployed to GitHub Pages
-const CSV_URL = `${import.meta.env.BASE_URL}bertin_matrix_projects_vs_capabilities_clustered_for_webpage.csv`;
+// BASE_URL is '/rare-labs-solutions-matrix/' when deployed (Vite ensures trailing slash)
+const CSV_URL = import.meta.env.BASE_URL + 'bertin_matrix_projects_vs_capabilities_clustered_for_webpage.csv';
 
 // Adjust these to match the actual project-level columns in your CSV.
 // Every other column will be treated as an AI capability.
@@ -154,8 +154,9 @@ export function useMatrixData(): UseMatrixDataResult {
         }
       },
       error: (err) => {
-        console.error(err);
-        setError(err.message ?? "Failed to load CSV.");
+        console.error('CSV loading error:', err);
+        console.error('Attempted to load from:', CSV_URL);
+        setError(`Failed to load CSV from ${CSV_URL}: ${err.message ?? 'Unknown error'}`);
         setIsLoading(false);
       },
     });
