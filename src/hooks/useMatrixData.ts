@@ -7,7 +7,9 @@ import type { MatrixData, Project, Capability } from "../types/matrix";
 // Adjust this to match your real CSV location
 // Use import.meta.env.BASE_URL to work with GitHub Pages subdirectory
 // BASE_URL is '/rare-labs-solutions-matrix/' when deployed (Vite ensures trailing slash)
-const CSV_URL = import.meta.env.BASE_URL + 'bertin_matrix_projects_vs_capabilities_clustered_for_webpage.csv';
+const BASE_URL = import.meta.env.BASE_URL || '/';
+const CSV_FILENAME = 'bertin_matrix_projects_vs_capabilities_clustered_for_webpage.csv';
+const CSV_URL = BASE_URL + CSV_FILENAME;
 
 // Adjust these to match the actual project-level columns in your CSV.
 // Every other column will be treated as an AI capability.
