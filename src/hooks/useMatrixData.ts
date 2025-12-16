@@ -5,7 +5,8 @@ import Papa from "papaparse";
 import type { MatrixData, Project, Capability } from "../types/matrix";
 
 // Adjust this to match your real CSV location
-const CSV_URL = "/bertin_matrix_projects_vs_capabilities_clustered_for_webpage.csv";
+// Use import.meta.env.BASE_URL to work with GitHub Pages subdirectory
+const CSV_URL = `${import.meta.env.BASE_URL}bertin_matrix_projects_vs_capabilities_clustered_for_webpage.csv`;
 
 // Adjust these to match the actual project-level columns in your CSV.
 // Every other column will be treated as an AI capability.
